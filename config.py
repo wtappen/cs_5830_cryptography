@@ -5,5 +5,5 @@ ECB_URL = BASE_URL + "/hw1/ecb_oracle/"
 CTR_URL = BASE_URL + "/hw1/ctr_oracle/"
 
 # TODO: put credentials here
-usr = ""
-key = ""
+usr = "wmt45"
+key = "9a/4m+L98MAqnhaIiWRGTdyQbcLllbZ+Sds1CLZHUfA="
