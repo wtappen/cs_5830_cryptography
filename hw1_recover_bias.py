@@ -1,3 +1,4 @@
+from itertools import count
 import requests
 
 import config as cfg
@@ -29,8 +30,35 @@ def bias_encryption_oracle(pt: bytes) -> bytes:
 
 def recover_flag() -> bytes:
     flag = bytes()
+    flag_length = len(bytearray(bias_encryption_oracle(bytes(bytearray()))))
 
-    # TODO: fill in your answer here
+    counters = {}
+    running_max = {"byte_index": -1, "count": 0}
+    for _ in range(500):
+        e_msg = bytearray(bias_encryption_oracle(bytes(bytearray(20))))
+        for i, b in enumerate(e_msg):
+            if not i in counters:
+                counters[i] = {}
+            if not b in counters[i]:
+                counters[i][b] = 0
+            counters[i][b] += 1
+            if counters[i][b] > running_max["count"]:
+                running_max["byte_index"] = i
+                running_max["count"] = counters[i][b]
+                running_max["value"] = b
+    biased_index = running_max["byte_index"]
+    biased_e_value = running_max["value"]
+
+    biased_pad_value = xor(bytes([0]), bytes([biased_e_value]))
+
+    msg = bytearray(biased_index)
+    for _ in range(flag_length):
+        e_vals = []
+        for i in range(10):
+            e_vals.append(bytearray(bias_encryption_oracle(bytes(msg)))[biased_index])
+        most_common = max(e_vals, key=e_vals.count)
+        flag += xor(biased_pad_value, bytes([most_common]))
+        msg = msg[:-1]
 
     return flag
 
