@@ -1,4 +1,3 @@
-from tarfile import BLOCKSIZE
 import requests
 import requests_cache
 from datetime import timedelta

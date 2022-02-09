@@ -45,18 +45,30 @@ class AESCtr:
     def encrypt(self, pt):
         """This function takes a byte stream @data and outputs the  ciphertext"""
 
-        nonce = b""
-        ct = b""
+        nonce = get_random_bytes(self._nonce_size_bytes)
+        num_blocks = math.ceil(len(pt) / self._block_size_bytes)
+        pad = b""
 
-        # TODO: Fill in this function
+        for nonce_and_counter in self._nonced_counter(nonce, num_blocks):
+            pad += self._aes_cipher(nonce_and_counter)
+
+        pad = pad[: len(pt)]
+
+        ct = xor(pt, pad)
 
         return nonce, ct
 
     def decrypt(self, nonce, ct):
         """This function decrypts a ciphertext encrypted using AES-CTR mode."""
 
-        pt = b""
+        num_blocks = math.ceil(len(ct) / self._block_size_bytes)
+        pad = b""
 
-        # TODO: Fill in this function
+        for nonce_and_counter in self._nonced_counter(nonce, num_blocks):
+            pad += self._aes_cipher(nonce_and_counter)
+
+        pad = pad[: len(ct)]
+
+        pt = xor(ct, pad)
 
         return pt
