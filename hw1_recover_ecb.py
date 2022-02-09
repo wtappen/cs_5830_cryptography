@@ -1,3 +1,4 @@
+from tarfile import BLOCKSIZE
 import requests
 import requests_cache
 from datetime import timedelta
@@ -38,7 +39,28 @@ def ecb_encryption_oracle(pt: bytes) -> bytes:
 def recover_flag() -> bytes:
     flag = bytes()
 
-    # TODO: fill in your answer here
+    msg = bytes()
+    original_len = len(bytearray(ecb_encryption_oracle(msg)))
+    i = 0
+    while True:
+        i += 1
+        msg += bytes(1)
+        if len(bytearray(ecb_encryption_oracle(msg))) > original_len:
+            flag_len = BLOCK_BYTES - i
+            break
+
+    # TODO: implement optimization to try all 256 combinations in one query
+    msg = bytes(BLOCK_BYTES - flag_len % BLOCK_BYTES)
+    for i in range(1, flag_len):
+        msg += bytes(1)
+        e_last_block = ecb_encryption_oracle(msg)[BLOCK_BYTES:]
+        for x in range(256):
+            test_msg = bytes([x]) + flag + bytes([BLOCK_BYTES - i] * (BLOCK_BYTES - i))
+            e_try = ecb_encryption_oracle(test_msg)
+            if e_try[-2 * BLOCK_BYTES : -BLOCK_BYTES] == e_last_block:
+                flag = bytes([x]) + flag
+                print("current flag is: " + flag.decode())
+                continue
 
     return flag
 
