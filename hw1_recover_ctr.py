@@ -30,7 +30,12 @@ def ctr_encryption_oracle(pt: bytes) -> bytes:
 def recover_flag() -> bytes:
     flag = bytes()
 
-    # TODO: fill in your answer here
+    msg = bytes(16)
+    e_msg = ctr_encryption_oracle(msg)
+    pad = xor(e_msg[:16], msg)
+
+    e_just_flag = ctr_encryption_oracle(bytes())
+    flag = xor(e_just_flag, pad[:9])
 
     return flag
 

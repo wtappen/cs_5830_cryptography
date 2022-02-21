@@ -48,18 +48,18 @@ def recover_flag() -> bytes:
             flag_len = BLOCK_BYTES - i
             break
 
-    # TODO: implement optimization to try all 256 combinations in one query
     msg = bytes(BLOCK_BYTES - flag_len % BLOCK_BYTES)
-    for i in range(1, flag_len):
+    for i in range(1, flag_len + 1):
         msg += bytes(1)
         e_last_block = ecb_encryption_oracle(msg)[BLOCK_BYTES:]
+        test_msg = bytes()
         for x in range(256):
-            test_msg = bytes([x]) + flag + bytes([BLOCK_BYTES - i] * (BLOCK_BYTES - i))
-            e_try = ecb_encryption_oracle(test_msg)
-            if e_try[-2 * BLOCK_BYTES : -BLOCK_BYTES] == e_last_block:
-                flag = bytes([x]) + flag
-                print("current flag is: " + flag.decode())
-                continue
+            test_msg += bytes([x]) + flag + bytes([BLOCK_BYTES - i] * (BLOCK_BYTES - i))
+        e_try = ecb_encryption_oracle(test_msg)
+        for j in range(256):
+            if e_try[j * BLOCK_BYTES : j * BLOCK_BYTES + BLOCK_BYTES] == e_last_block:
+                flag = bytes([j]) + flag
+                break
 
     return flag
 
