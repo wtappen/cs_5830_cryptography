@@ -4,7 +4,12 @@ from Crypto.Random import get_random_bytes
 from hw1_AESCtr import AESCtr
 import pytest
 
-msg = [b"A secret message"]  # More test cases at grading
+msg = [
+    b"A secret message",
+    b"A secret",
+    b"",
+    b"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+]  # More test cases at grading
 
 
 @pytest.mark.parametrize("data", msg)
