@@ -54,8 +54,32 @@ def isCookieAdFree_oracle(ct: bytes) -> bool:
 
 
 def gen_cookie_ad_free() -> bytes:
-    # TODO: fill in your answer here
-    pass
+
+    c = genCookie_oracle()
+    iv = c[:BLOCK_BYTES]
+    estimated_time = int(time.time()) + 60 * 60
+
+    for t in range(estimated_time - 60, estimated_time + 61):
+        no_hash_plaintext = "username=wmt45&validtill=" + str(t) + "&adfree=0"
+        plaintext = (
+            no_hash_plaintext
+            + "&sha256="
+            + sha256(no_hash_plaintext.encode("utf-8")).hex()
+        )
+        pad = xor(plaintext.encode(), c[BLOCK_BYTES:])
+
+        new_no_hash_plaintext = "username=wmt45&validtill=" + str(t) + "&adfree=1"
+        new_plaintext = (
+            new_no_hash_plaintext
+            + "&sha256="
+            + sha256(new_no_hash_plaintext.encode("utf-8")).hex()
+        )
+        new_cookie = iv + xor(new_plaintext.encode("utf-8"), pad)
+
+        if isCookieAdFree_oracle(new_cookie):
+            return new_cookie
+
+    return bytes(1)
 
 
 if __name__ == "__main__":
