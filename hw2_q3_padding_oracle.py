@@ -64,55 +64,31 @@ def recover_flag() -> bytes:
     c1 = c_blocks[1]
 
     r = bytearray(BLOCK_BYTES)
-    x = 0
-
-    # for i from 8th index to 0th index:
-    # set bytes from i + 1 to the end of the block with value that will make the plaintext look like all the right padding
-
-    # for all 256 values:
-    # check if r + c1 is legit
-    # if so:
-    # record what the plaintext value is
-    # break out of loop
 
     known = bytearray(BLOCK_BYTES)
     for i in range(7, 0, -1):
         known[-i] = 7
-    print(known)
 
     for j in range(8, -1, -1):
         pad_num = BLOCK_BYTES - j
-        print(pad_num)
         for k in range(j + 1, BLOCK_BYTES):
             r[k] = byte_to_int(
                 xor(
                     xor(int_to_byte(c0[k]), int_to_byte(known[k])), int_to_byte(pad_num)
                 )
             )
-        print(r.hex())
         for i in range(256):
             r[j] = i
-            # print(r.hex())
             if check_padding_oracle(bytes(r) + c1):
-                print(i)
                 b = xor(
-                    xor(i.to_bytes(1, "big"), (c0[j]).to_bytes(1, "big")),
-                    pad_num.to_bytes(1, "big"),
+                    xor(int_to_byte(i), int_to_byte(c0[j])),
+                    int_to_byte(pad_num),
                 )
-                print(b.hex())
                 known[j] = byte_to_int(b)
                 break
     flag = bytes(known[:9])
 
     return flag
-
-
-# multiple = False
-# for n in range(BLOCK_BYTES, 1, -1):
-#     r_check = r[:]
-#     r_check[BLOCK_BYTES - n] = 1
-#     if not check_padding_oracle(bytes(r) + c1):
-#         plaintext =
 
 
 if __name__ == "__main__":
