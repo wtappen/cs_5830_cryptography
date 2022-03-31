@@ -88,11 +88,34 @@ def isValidEncryptionBackdoor_oracle(msg: bytes) -> bool:
         sys.exit(-1)
 
 
+def aes_decrypt(m):
+    KEY = "AAAAAAAAAAAAAAAA".encode()
+    IV = bytes(16)
+    E = AES.new(KEY, AES.MODE_CBC, iv=IV)
+    return E.decrypt(m)
+
+
 def generate_custom_cbcmac_collision(
     prefix_message: bytes, target_hash: bytes
 ) -> bytes:
-    # TODO: fill in your answer here
-    pass
+
+    PAD_BLOCK = computePkcs7Padding_oracle(bytes())
+
+    orig_e_code = getEncryptionCode_oracle()
+    orig_hash = computeCBCMACHash_oracle(orig_e_code)
+    backdoor_e_code = getEncryptionCodeWithBackdoor_oracle()
+    valid_backdoor_e_code = computePkcs7Padding_oracle(backdoor_e_code)
+
+    x = aes_decrypt(orig_hash)
+    x_xor_pad = xor(x, PAD_BLOCK)
+    decrypted_x_xor_pad = aes_decrypt(x_xor_pad)
+
+    second_to_last_e = computeCBCMACHash_oracle(backdoor_e_code)
+    last_backdoor_block = xor(decrypted_x_xor_pad, second_to_last_e)
+    valid_backdoor_e_code += last_backdoor_block
+
+    return valid_backdoor_e_code
+
 
 
 if __name__ == "__main__":
