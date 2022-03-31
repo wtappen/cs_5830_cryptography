@@ -1,14 +1,21 @@
 BASE_URL = "https://bad.cryptography.fyi"
 AUTH_URL = BASE_URL + "/check_auth/"
 
-Q1_GENCOOKIE_URL = BASE_URL + "/hw2/q1/genCookie/"
-Q1_ADFREE_URL = BASE_URL + "/hw2/q1/isCookieAdFree/"
+Q1_CBCMAC_URL = BASE_URL + "/hw3/q1/computeCbcMacHash/"
+Q1_PKCS7_URL = BASE_URL + "/hw3/q1/computePkcs7Padding/"
+Q1_ENCRYPTION_CODE_URL = BASE_URL + "/hw3/q1/getEncryptionCode/"
+Q1_ENCRYPTION_CODE_WITH_BACKDOOR_URL = (
+    BASE_URL + "/hw3/q1/getEncryptionCodeWithBackdoor/"
+)
+Q1_IS_VALID_ENCRYPTION_BACKDOOR_URL = BASE_URL + "/hw3/q1/isValidEncryptionBackdoor/"
 
-Q2_GENCOOKIE_URL = BASE_URL + "/hw2/q2/genCookie/"
-Q2_ADFREE_URL = BASE_URL + "/hw2/q2/isCookieAdFree/"
+Q2_GENCOOKIE_URL = BASE_URL + "/hw3/q2/genCookie/"
+Q2_ADFREE_URL = BASE_URL + "/hw3/q2/isCookieAdFree/"
 
-Q3_ENCRYPT_URL = BASE_URL + "/hw2/q3/encrypt/"
-Q3_PADDING_URL = BASE_URL + "/hw2/q3/check_padding/"
+Q3_GETDATA_URL = BASE_URL + "/hw3/q3/getData/"
+Q3_CHECKHMAC_URL = BASE_URL + "/hw3/q3/checkHMAC/"
+
+Q3_SECRET = b"AAAAAAAAAAAAAAAA"
 
 usr = "wmt45"
 key = "9a/4m+L98MAqnhaIiWRGTdyQbcLllbZ+Sds1CLZHUfA="
