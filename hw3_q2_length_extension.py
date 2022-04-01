@@ -57,35 +57,21 @@ def md5_compress(state: bytes, block: bytes) -> bytes:
 
 def gen_cookie_ad_free() -> bytes:
     original_cookie = genCookie_oracle()
-    original_hash = original_cookie[-MD5_BYTES:]
+    original_hash = bytes.fromhex(original_cookie[-32:].decode())
     original_cookie_no_hash = '&'.join(original_cookie.decode().split('&')[:-1]).encode()
     
-    cookie_bit_len = len(original_cookie_no_hash) * 8
-
-    # to_hash = '&adfree=1'.encode()
-    # s = original_hash
-    # for i in range(0, len(to_hash), BLOCK_BYTES):
-    #     s = md5_compress(s, to_hash[i:i + BLOCK_BYTES])
-    
-    # forged_hash = s
-
     for secret_len in range(16, 65):
         padding0 = padding(len(original_cookie_no_hash) + secret_len)
         my_padding = padding(len(original_cookie_no_hash) + secret_len + len(padding0) + len('&adfree=1'.encode()))
         to_hash = '&adfree=1'.encode() + my_padding
-        # print(len(original_cookie_no_hash) + secret_len + len(padding0) + len('&adfree=1'.encode()))
-        print((len(original_cookie_no_hash) + secret_len + len(padding0) + len('&adfree=1'.encode())) * 8)
-        print(my_padding.hex())
+
         s = original_hash
         for i in range(0, len(to_hash), BLOCK_BYTES):
             s = md5_compress(s, to_hash[i:i + BLOCK_BYTES])
 
-        forged_cookie = original_cookie_no_hash + padding0 + '&adfree=1&md5='.encode() + s
-        # print(original_cookie)
-        # print(forged_cookie.hex())
-        # break
+        forged_cookie = original_cookie_no_hash + padding0 + '&adfree=1&md5='.encode() + s.hex().encode()
+
         if isCookieAdFree_oracle(forged_cookie):
-            print("hooray!!")
             break
 
     return forged_cookie
