@@ -1,4 +1,5 @@
 import collections
+from operator import mod
 import requests
 import requests_cache
 import bitstring
@@ -60,8 +61,24 @@ def verifySignature_oracle(sig: ECDSASignature) -> bool:
 
 
 def recover_secret_key() -> int:
-    # TODO: fill in your answer here
-    pass
+
+    def H(msg):
+        hashHex = sha256(msg).hexdigest()
+        return int.from_bytes(bytes.fromhex(hashHex), "big")
+
+    r1 = 0
+    r2 = 1
+
+    while r1 != r2:
+        res1 = getSignature_oracle()
+        res2 = getSignature_oracle()
+        m1, sig1 = res1[0], res1[1]
+        m2, sig2 = res2[0], res2[1]
+        s1, r1 = sig1.s, sig1.r
+        s2, r2 = sig2.s, sig2.r
+
+    k = mod_inverse(s1 - s2, N) * (H(m1) - H(m2))
+    return mod((s1 * k - (H(m1))) * mod_inverse(r1, N), N)
 
 
 def forge_signature(msg) -> ECDSASignature:
