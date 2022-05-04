@@ -1,21 +1,14 @@
 BASE_URL = "https://bad.cryptography.fyi"
 AUTH_URL = BASE_URL + "/check_auth/"
 
-Q1_CBCMAC_URL = BASE_URL + "/hw3/q1/computeCbcMacHash/"
-Q1_PKCS7_URL = BASE_URL + "/hw3/q1/computePkcs7Padding/"
-Q1_ENCRYPTION_CODE_URL = BASE_URL + "/hw3/q1/getEncryptionCode/"
-Q1_ENCRYPTION_CODE_WITH_BACKDOOR_URL = (
-    BASE_URL + "/hw3/q1/getEncryptionCodeWithBackdoor/"
-)
-Q1_IS_VALID_ENCRYPTION_BACKDOOR_URL = BASE_URL + "/hw3/q1/isValidEncryptionBackdoor/"
+Q1_GET_SIGNATURE = BASE_URL + "/hw4/q1/getSignature/"
+Q1_VERIFY_SIGNATURE = BASE_URL + "/hw4/q1/verifySignature/"
 
-Q2_GENCOOKIE_URL = BASE_URL + "/hw3/q2/genCookie/"
-Q2_ADFREE_URL = BASE_URL + "/hw3/q2/isCookieAdFree/"
+Q2_GET_WIRE_DATA = BASE_URL + "/hw4/q2/getWireData/"
+Q2_CHECK_CONFIRMATION = BASE_URL + "/hw4/q2/checkConfirmation/"
 
-Q3_GETDATA_URL = BASE_URL + "/hw3/q3/getData/"
-Q3_CHECKHMAC_URL = BASE_URL + "/hw3/q3/checkHMAC/"
-
-Q3_SECRET = b"AAAAAAAAAAAAAAAA"
+Q3_GETMSG_URL = BASE_URL + "/hw4/q3/getPkAndMsg/"
+Q3_VERIFYRSA_URL = BASE_URL + "/hw4/q3/verifyRSA/"
 
 usr = "wmt45"
 key = "9a/4m+L98MAqnhaIiWRGTdyQbcLllbZ+Sds1CLZHUfA="

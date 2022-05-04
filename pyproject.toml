@@ -12,6 +12,9 @@ black = "*"
 requests = "^2.27.1"
 numpy = "^1.22.1"
 requests-cache = "^0.9.1"
+sympy = "^1.10.1"
+bitstring = "^3.1.9"
+ecdsa = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
 
