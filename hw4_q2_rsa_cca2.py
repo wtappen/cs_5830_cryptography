@@ -88,21 +88,17 @@ def recover_flag() -> bytes:
 
     for b in range(127, -1, -1):
         kb = 0
-        for i, b in enumerate(k_so_far):
-            kb = kb | b << 127 - i
-        print(bitstring.Bits(kb.to_bytes(16, "big")))
+        for i in range(len(k_so_far)):
+            kb = kb | k_so_far[-(i + 1)] << 126 - i
         Cb = mod(Ck * (mod(2 ** (b  * E), N)), N)
         if check_encrypt_fake_stuff(kb, Cb):
             k_so_far.append(0)
         else:
             k_so_far.append(1)
-        print(k_so_far)
     
-
+    k_so_far.reverse()
     ba = bitstring.BitArray(k_so_far)
     sessionKeyGuess = ba.tobytes()
-    print(ba)
-    print(sessionKeyGuess)
 
     # X. Once we recovered the session key, we can use it to decrypt the given
     #    ciphertext to reveal the flag.
