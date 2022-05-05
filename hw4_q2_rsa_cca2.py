@@ -2,6 +2,7 @@ import collections
 import requests
 import requests_cache
 import bitstring
+from operator import mod
 
 import config as cfg
 
@@ -60,6 +61,15 @@ def checkConfirmation_oracle(
         )
         exit(-1)
 
+def check_encrypt_fake_stuff(sessionKeyGuessInt, sessionKeyEncryptionGuessInt):
+    sessionKeyGuess = sessionKeyGuessInt.to_bytes(16, "big")
+    sessionKeyEncryptionGuess = sessionKeyEncryptionGuessInt.to_bytes(MAX_BYTE_LENGTH, "big")
+
+    cipher = AES.new(sessionKeyGuess, mode=AES.MODE_GCM, nonce=ALL_ZEROS_NONCE)
+    cipher.update(sessionKeyEncryptionGuess)
+    fakeCiphertext, fakeTag = cipher.encrypt_and_digest(b"RSA{ffff}")
+    fakeFlagEncryption = AEADCiphertext(fakeCiphertext, fakeTag)
+    return checkConfirmation_oracle(fakeFlagEncryption, sessionKeyEncryptionGuess)
 
 def recover_flag() -> bytes:
     N, E, flagEncryption, sessionKeyEncryption = getWireData_oracle()
@@ -72,6 +82,27 @@ def recover_flag() -> bytes:
     assert sessionKeyEncryption == sessionKeyEncryptionBytes
 
     # TODO: fill in your answer here to recover the session key
+    Ck = int.from_bytes(sessionKeyEncryption, "big")
+
+    k_so_far = []
+
+    for b in range(127, -1, -1):
+        kb = 0
+        for i, b in enumerate(k_so_far):
+            kb = kb | b << 127 - i
+        print(bitstring.Bits(kb.to_bytes(16, "big")))
+        Cb = mod(Ck * (mod(2 ** (b  * E), N)), N)
+        if check_encrypt_fake_stuff(kb, Cb):
+            k_so_far.append(0)
+        else:
+            k_so_far.append(1)
+        print(k_so_far)
+    
+
+    ba = bitstring.BitArray(k_so_far)
+    sessionKeyGuess = ba.tobytes()
+    print(ba)
+    print(sessionKeyGuess)
 
     # X. Once we recovered the session key, we can use it to decrypt the given
     #    ciphertext to reveal the flag.
