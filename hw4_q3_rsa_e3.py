@@ -1,3 +1,4 @@
+from hashlib import sha256
 import requests
 import time
 import os
@@ -58,9 +59,16 @@ def verifyRSA_oracle(sig: int) -> bool:
 def forge_signature() -> int:
     N, msg = getPkAndMsg_oracle()
 
-    # TODO: fill in your answer here
-    pass
+    TARGET_BYTE_LENGTH = 256
 
+    prefix = bytes.fromhex('0001ff00')
+    hash = sha256(msg).hexdigest()
+
+    b = prefix + Sha256AlgorithmId + bytes.fromhex(hash)
+    b = b + bytes.fromhex('ff') * (TARGET_BYTE_LENGTH - len(b))
+    i = int.from_bytes(b, "big")
+
+    return int(root(i, 3))
 
 if __name__ == "__main__":
 
